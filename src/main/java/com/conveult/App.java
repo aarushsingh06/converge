@@ -1,24 +1,37 @@
 package com.conveult;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
+
 import com.conveult.core.ConverterService;
+
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
 
 public class App extends Application {
     private final ConverterService converter = new ConverterService();
     private File selectedFile;
-    private Path outputDirectory = Path.of(System.getProperty("user.home"), "Conve-ult-Output");
+    private Path outputDirectory = Path.of(System.getProperty("user.home"), "converge-Output");
     private final Label fileLabel = new Label("No file selected");
     private final Label outputLabel = new Label();
     private final Label statusLabel = new Label("Ready when you are.");
@@ -32,13 +45,13 @@ public class App extends Application {
     private final Button convertButton = new Button("Convert file");
 
     @Override public void start(Stage stage) {
-        stage.setTitle("Conve-ult | File Converter");
+        stage.setTitle("converge | File Converter");
         category.getItems().addAll("Image", "Document", "Video", "Archive");
         category.setValue("Image"); updateFormats();
         category.setOnAction(e -> updateFormats());
         quality.valueProperty().addListener((o, a, b) -> qualityLabel.setText(b.intValue() + "%"));
 
-        Label brand = new Label("conve-ult"); brand.getStyleClass().add("brand");
+        Label brand = new Label("converge"); brand.getStyleClass().add("brand");
         Label subtitle = new Label("One workspace for your files."); subtitle.getStyleClass().add("subtitle");
         VBox heading = new VBox(4, brand, subtitle);
         Button choose = new Button("Choose file"); choose.setOnAction(e -> chooseFile(stage));
@@ -112,7 +125,7 @@ public class App extends Application {
         convertButton.disableProperty().bind(task.runningProperty());
         task.setOnSucceeded(e -> { statusLabel.textProperty().unbind(); convertButton.disableProperty().unbind(); convertButton.setDisable(false); statusLabel.setText("Success — saved to " + task.getValue()); });
         task.setOnFailed(e -> { statusLabel.textProperty().unbind(); convertButton.disableProperty().unbind(); convertButton.setDisable(false); progress.progressProperty().unbind(); progress.setProgress(0); statusLabel.setText("Conversion failed."); alert("Conversion failed", task.getException().getMessage() == null ? task.getException().toString() : task.getException().getMessage()); });
-        Thread thread = new Thread(task, "conve-ult-converter"); thread.setDaemon(true); thread.start();
+        Thread thread = new Thread(task, "converge-converter"); thread.setDaemon(true); thread.start();
     }
     private Integer parseDimension(String s) { if (s == null || s.isBlank()) return null; try { int n = Integer.parseInt(s.trim()); return n > 0 ? n : null; } catch (NumberFormatException e) { return null; } }
     private String readableSize(long bytes) { if (bytes < 1024) return bytes + " B"; if (bytes < 1024 * 1024) return String.format("%.1f KB", bytes / 1024.0); return String.format("%.1f MB", bytes / (1024.0 * 1024)); }

@@ -1,4 +1,4 @@
-# Conve-ult — Ultimate File Converter
+# converge — Ultimate File Converter
 
 A Java 21 + JavaFX desktop file conversion app inspired by the supplied project overview and core-engine deep dive. It includes background conversion tasks, image resizing/compression, document text extraction and export, optional FFmpeg video transcoding, and ZIP create/extract support.
 
